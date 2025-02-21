@@ -14,7 +14,7 @@ type Cache struct {
 	maxBytes int64
 	nbytes int64
 
-	OnEvicted func(key string, value Value)// 某条记录被移除时的回调函数，可以为nil
+	OnEvicted func(key string, value Value)//Optional 某条记录被移除时的回调函数，可以为nil
 }
 
 type entry struct {
