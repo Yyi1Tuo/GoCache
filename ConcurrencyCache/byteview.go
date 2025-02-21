@@ -6,6 +6,7 @@ import (
 	"GoCache/lru"
 )
 //抽象一个只读的数据结构来表示缓存值
+//也就是对真实缓存值接口Value的抽象
 type ByteView struct {
 	bytes []byte
 }

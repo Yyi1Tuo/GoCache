@@ -1,7 +1,7 @@
+//无并发控制的LRU缓存
 package lru
 
 import (
-	"sync"
 	"container/list"
 	"GoCache/debug"
 )
