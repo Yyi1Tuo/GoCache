@@ -13,6 +13,13 @@ var db = map[string]string{
 	"Sam":  "567",
 }
 
-func TestGet(t *testing.T){
+func TestGetter(t *testing.T) {
+	var f Getter = GetterFunc(func(key string) ([]byte, error) {
+		return []byte(key), nil
+	})
 
+	expect := []byte("key")
+	if v, _ := f.Get("key"); !reflect.DeepEqual(v, expect) {
+		t.Errorf("callback failed")
+	}
 }
