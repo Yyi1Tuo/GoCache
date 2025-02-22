@@ -15,15 +15,18 @@ type cache struct{
 	cacheBytes int64
 }
 
+var once sync.Once 
+
 func (c *cache) add(key string,value Byteview){
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	if c.lru == nil{
-		c.lru:=lru.New(c.cacheBytes,nil)
-		//延迟初始化(Lazy Initialization)，
-		//一个对象的延迟初始化意味着该对象的创建将会延迟至第一次使用该对象时。
-		//主要用于提高性能，并减少程序内存要求。
-	}
+	
+	once.Do(func(){
+		c.lru = lru.New(c.cacheBytes,nil)
+	})
+	//延迟初始化(Lazy Initialization)，
+	//一个对象的延迟初始化意味着该对象的创建将会延迟至第一次使用该对象时。
+	//主要用于提高性能，并减少程序内存要求。
 	c.lru.Add(key,value)
 }
 
@@ -31,6 +34,7 @@ func (c *cache) get(key string) (value ByteView, ok bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if c.lru == nil {
+		//这里需要添加一个回调函数，以从数据库中读取数据
 		return
 	}
 
@@ -39,4 +43,9 @@ func (c *cache) get(key string) (value ByteView, ok bool) {
 	}
 
 	return
+}
+
+//由于数据源种类可能很多，定义一个接口用来读取数据源到缓存
+type Getter interface{
+	Get(key string) ([]byte,error)
 }
